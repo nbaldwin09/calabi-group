@@ -92,34 +92,30 @@ export function BrandShell({ children }: { brand?: string; children: ReactNode }
             <Link to="/terms" className="mt-1 block">Terms</Link>
             <Link to="/status" className="mt-1 block">Status</Link>
           </div>
-          <div>
+          <div className="flex flex-col items-start sm:items-end">
             <p className="text-white">Account</p>
             <Link to="/account" className="mt-2 block">Sign in</Link>
             <Link to="/console" className="mt-1 block">Console</Link>
+            <a
+              href="https://aorila.com"
+              target="_blank"
+              rel="noreferrer"
+              className="mt-6"
+              style={{
+                background: "#ffffff",
+                color: "#161616",
+                borderRadius: 10,
+                padding: "10px 14px",
+                fontSize: 13,
+                lineHeight: 1.3,
+              }}
+            >
+              Powered by{" "}
+              <span style={{ textDecoration: "underline" }}>Aorila</span>
+            </a>
           </div>
         </div>
       </footer>
-      <a
-        href="https://aorila.com"
-        target="_blank"
-        rel="noreferrer"
-        style={{
-          position: "fixed",
-          right: 16,
-          bottom: 16,
-          zIndex: 50,
-          background: "#ffffff",
-          color: "#161616",
-          borderRadius: 10,
-          padding: "10px 14px",
-          fontSize: 13,
-          lineHeight: 1.3,
-          boxShadow: "0 8px 24px rgba(0,0,0,.35)",
-        }}
-      >
-        Powered by{" "}
-        <span style={{ textDecoration: "underline" }}>Aorila</span>
-      </a>
     </div>
   );
 }
