@@ -8,8 +8,8 @@ function PricingPage() {
     <main className="mx-auto max-w-6xl px-4 py-12">
       <h1 className="font-display text-5xl">Pricing</h1>
       <p className="mt-3 max-w-xl text-muted">
-        Listed rates include the Calabi overlay (snapshot, spare, vault). Underlying GPU hours are
-        dropshiped from the fabric.
+        Listed rates are Calabi rates. They include the control plane, snapshot, spare region, and
+        vault option. Billed per minute. Calabi is the merchant of record.
       </p>
       <div className="mt-8 overflow-x-auto rounded-xl shadow-[0_0_0_1px_var(--color-line)]">
         <table className="w-full min-w-[32rem] text-left text-sm">

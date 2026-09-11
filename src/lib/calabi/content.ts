@@ -1,19 +1,8 @@
 export const REGIONS = [
-  { id: "iad", city: "Ashburn", code: "us-east-1", role: "Primary", provider: "RunPod + CoreWeave" },
-  { id: "sjc", city: "San Jose", code: "us-west-1", role: "Hot spare", provider: "Lambda + RunPod" },
-  { id: "ams", city: "Amsterdam", code: "eu-west-1", role: "Quorum", provider: "Hetzner + Vast" },
-  { id: "sin", city: "Singapore", code: "ap-southeast-1", role: "Quorum", provider: "Together + Fly" },
-];
-
-export const PROVIDERS = [
-  { id: "runpod", name: "RunPod", kind: "GPU marketplace", use: "Burst GPU hours, community + secure cloud" },
-  { id: "vast", name: "Vast.ai", kind: "Distributed GPU", use: "Price-seeking training jobs with snapshot hooks" },
-  { id: "lambda", name: "Lambda", kind: "GPU cloud", use: "Reserved A100 / H100 when the hall is quiet" },
-  { id: "coreweave", name: "CoreWeave", kind: "HPC cloud", use: "Lattice-class pods and InfiniBand fabrics" },
-  { id: "together", name: "Together", kind: "Inference", use: "Managed endpoints when you do not want a VM" },
-  { id: "fly", name: "Fly.io", kind: "Edge VM", use: "Anycast CPU close to the user" },
-  { id: "hetzner", name: "Hetzner", kind: "Storage / CPU", use: "Cheap quorum disks and CPU nodes" },
-  { id: "backblaze", name: "Backblaze B2", kind: "Object cold", use: "Vault copies, object lock, second media" },
+  { id: "iad", city: "Ashburn", code: "us-east-1", role: "Primary" },
+  { id: "sjc", city: "San Jose", code: "us-west-1", role: "Hot spare" },
+  { id: "ams", city: "Amsterdam", code: "eu-west-1", role: "Quorum" },
+  { id: "sin", city: "Singapore", code: "ap-southeast-1", role: "Quorum" },
 ];
 
 export const SKUS = [

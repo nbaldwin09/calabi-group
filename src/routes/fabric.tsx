@@ -1,25 +1,28 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { PROVIDERS } from "@/lib/calabi/content";
 
 export const Route = createFileRoute("/fabric")({ component: FabricPage });
 
 function FabricPage() {
   return (
-    <main className="mx-auto max-w-6xl px-4 py-12">
+    <main className="mx-auto max-w-3xl px-4 py-12">
       <h1 className="font-display text-5xl">Fabric</h1>
       <p className="mt-3 max-w-xl text-muted">
-        Dropshipping compute is not a slur. It is how you stay up when one marketplace blinks.
-        Calabi is the control plane: schedule, snapshot, spare, invoice.
+        Calabi is the control plane: catalog, schedule, snapshot, spare, invoice. Hardware sits in
+        qualified halls. You never operate those halls.
       </p>
-      <div className="mt-8 grid gap-3 sm:grid-cols-2">
-        {PROVIDERS.map((p) => (
-          <article key={p.id} className="rounded-xl bg-surface p-5 shadow-[0_0_0_1px_var(--color-line)]">
-            <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-faint">{p.kind}</p>
-            <h2 className="mt-1 text-xl">{p.name}</h2>
-            <p className="mt-2 text-sm text-muted">{p.use}</p>
-          </article>
+      <ul className="mt-10 divide-y divide-line border-y border-line">
+        {[
+          { t: "Secure GPU", d: "Datacenter-class cards. Preferred path for Spark through Lattice." },
+          { t: "CPU nodes", d: "Forge and Node for compile, queue, and control work." },
+          { t: "Object + vault", d: "Versioned object and WORM copies on a second medium." },
+          { t: "Spare region", d: "Every launch names a second Calabi region before health turns green." },
+        ].map((x) => (
+          <li key={x.t} className="py-6">
+            <h2 className="text-xl">{x.t}</h2>
+            <p className="mt-2 text-sm text-muted">{x.d}</p>
+          </li>
         ))}
-      </div>
+      </ul>
     </main>
   );
 }

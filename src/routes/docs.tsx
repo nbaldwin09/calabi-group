@@ -6,29 +6,38 @@ function DocsPage() {
   return (
     <main className="mx-auto max-w-3xl px-4 py-12">
       <h1 className="font-display text-5xl">Docs</h1>
-      <article className="mt-8 space-y-4 text-muted">
-        <h2 className="text-xl text-fg">1. Own Render, own Supabase</h2>
-        <p>
-          Calabi Group is its own Render web service and its own Supabase project. It does not share a
-          database with Bullpen Cession or NeemSeed. GitHub: nbaldwin09/calabi-group. Domain:
-          calabigroup.com.
-        </p>
-        <h2 className="text-xl text-fg">2. Point DNS at this origin</h2>
-        <p>
-          calabigroup.com currently sits on leftover Firebase A records (199.36.158.100) with no
-          deploy. Add the apex and www as custom domains on the Calabi Render service, then ALIAS/ANAME
-          the apex and CNAME www. Remove the Firebase addresses.
-        </p>
-        <h2 className="text-xl text-fg">3. Fabric keys</h2>
-        <p>
-          RunPod and peer tokens live as Render environment variables on this service only. Pods and
-          heartbeats persist in the Calabi Supabase project.
-        </p>
-        <h2 className="text-xl text-fg">4. Backup policy</h2>
-        <p>
-          Every pod declares a spare region at launch. Snapshots replicate before the health check
-          turns green. Vault is object-lock. Do not disable it to save cents.
-        </p>
+      <article className="mt-8 space-y-8 text-muted">
+        <section>
+          <h2 className="text-xl text-fg">Launch</h2>
+          <p className="mt-2">
+            Open Console, pick a SKU and region, attach the vault, launch. Calabi assigns a spare
+            region before the pod is marked ready. You are billed on the Calabi list price for the
+            minutes the pod exists.
+          </p>
+        </section>
+        <section>
+          <h2 className="text-xl text-fg">Regions</h2>
+          <p className="mt-2">
+            Four Calabi regions: us-east-1 (Ashburn), us-west-1 (San Jose), eu-west-1 (Amsterdam),
+            ap-southeast-1 (Singapore). Workloads land in qualified facilities inside that geography.
+            The spare is a second Calabi region, not a second rack in the same hall.
+          </p>
+        </section>
+        <section>
+          <h2 className="text-xl text-fg">Vault</h2>
+          <p className="mt-2">
+            Vault is object-lock storage on a second medium. Snapshots replicate on a 15 / 10 / 5
+            minute cadence by SKU class. Do not disable vault to save cents.
+          </p>
+        </section>
+        <section>
+          <h2 className="text-xl text-fg">Contract</h2>
+          <p className="mt-2">
+            Calabi Group is the merchant of record. Support, invoices, and the control plane come
+            from us. Capacity is fulfilled on a private fabric of qualified facilities. You do not
+            hold an account with those operators.
+          </p>
+        </section>
       </article>
     </main>
   );

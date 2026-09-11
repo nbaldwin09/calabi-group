@@ -30,9 +30,7 @@ function ConsolePage() {
   return (
     <main className="mx-auto max-w-6xl px-4 py-12">
       <h1 className="font-display text-5xl">Console</h1>
-      <p className="mt-2 text-muted">
-        Launch a pod. A spare region is assigned automatically.
-      </p>
+      <p className="mt-2 text-muted">Launch a pod. A spare region is assigned automatically.</p>
       <div className="mt-8 grid gap-6 lg:grid-cols-[20rem_1fr]">
         <form
           className="space-y-3 rounded-xl bg-surface p-5 shadow-[0_0_0_1px_var(--color-line)]"
@@ -41,7 +39,7 @@ function ConsolePage() {
             setMsg("");
             const res = await launchPod({ data: { sku, region, vault } });
             if (res && "error" in res && res.error) {
-              setMsg(res.error);
+              setMsg(String(res.error));
               return;
             }
             void pods.refetch();
@@ -91,10 +89,9 @@ function ConsolePage() {
           {!pods.data?.length ? (
             <p className="text-muted">No pods yet. Launch one — a spare region is assigned automatically.</p>
           ) : (
-            pods.data.map((p) => {
+            pods.data.map((p: any) => {
               const s = SKUS.find((x) => x.id === p.sku);
               const r = REGIONS.find((x) => x.id === p.region);
-              const spare = REGIONS.find((x) => x.id !== p.region);
               return (
                 <article
                   key={p.id}
@@ -103,7 +100,7 @@ function ConsolePage() {
                   <div>
                     <p className="font-mono text-xs text-faint">{p.id}</p>
                     <p>
-                      {s?.name} · {r?.code} · spare {spare?.code}
+                      {s?.name} · {r?.code} · spare {p.spare} · {p.status || "queued"}
                       {p.vault ? " · vault" : ""}
                     </p>
                   </div>

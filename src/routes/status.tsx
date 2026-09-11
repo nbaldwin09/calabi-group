@@ -12,7 +12,7 @@ function StatusPage() {
     queryFn: () => listHeartbeats(),
     refetchInterval: 20_000,
   });
-  const byId = Object.fromEntries((beats.data || []).map((b) => [b.region_id, b]));
+  const byId = Object.fromEntries((beats.data || []).map((b: any) => [b.region_id, b]));
 
   return (
     <SimplePage title="Status" lead="Four regions. Failover is the product.">
@@ -23,9 +23,7 @@ function StatusPage() {
             <li key={r.id} className="flex items-baseline justify-between gap-4 py-5">
               <div>
                 <h2 className="text-xl">{r.city}</h2>
-                <p className="text-sm text-muted">
-                  {r.code} · {r.provider}
-                </p>
+                <p className="text-sm text-muted">{r.code}</p>
               </div>
               <p className="text-sm text-ok">
                 {hb?.status || "nominal"}

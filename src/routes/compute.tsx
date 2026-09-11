@@ -8,7 +8,7 @@ function ComputePage() {
   return (
     <SimplePage
       title="Compute"
-      lead="GPU pods and CPU VMs. Price is the dropshipped floor plus snapshot, spare, and failover."
+      lead="GPU pods and CPU VMs. Price includes snapshot, spare region, and failover."
     >
       <ul className="divide-y divide-line border-y border-line">
         {SKUS.map((s) => (

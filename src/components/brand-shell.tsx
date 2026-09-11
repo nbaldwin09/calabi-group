@@ -72,7 +72,13 @@ export function BrandShell({ children }: { brand?: string; children: ReactNode }
       <footer className="border-t border-line">
         <div className="mx-auto flex max-w-6xl flex-col gap-2 px-5 py-10 text-sm text-faint sm:flex-row sm:items-center sm:justify-between">
           <p>Calabi Group</p>
-          <p>An Aorila house · calabigroup.com</p>
+          <p>
+            <Link to="/terms" className="hover:text-fg">
+              Terms
+            </Link>
+            <span className="mx-2">·</span>
+            calabigroup.com
+          </p>
         </div>
       </footer>
     </div>

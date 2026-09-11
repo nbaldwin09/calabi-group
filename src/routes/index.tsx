@@ -11,8 +11,8 @@ function CalabiHome() {
         <div className="mx-auto flex max-w-4xl flex-col items-center px-5 py-20 text-center sm:py-28">
           <CalabiType className="text-6xl sm:text-8xl" />
           <p className="mt-10 max-w-md text-muted">
-            GPU, VM, and storage with a spare already on. Capacity from RunPod and peers. Backups so
-            a hall can fail without the workload noticing.
+            GPU, VM, and storage with a spare already on. You buy from Calabi. A hall can fail
+            without the workload noticing.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link
@@ -31,7 +31,7 @@ function CalabiHome() {
         </div>
       </section>
       <section className="mx-auto grid max-w-4xl gap-10 px-5 py-16 sm:grid-cols-3">
-        <Fact title="Compute" body="CPU nodes and GPU pods, dropshipped and wrapped in a spare region." />
+        <Fact title="Compute" body="CPU nodes and GPU pods, wrapped in a spare region." />
         <Fact title="Storage" body="Block, object, and a WORM vault. Three copies. Two media." />
         <Fact title="Status" body="Four regions, always watching. Failover is the product." />
       </section>
