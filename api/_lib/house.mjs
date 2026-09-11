@@ -9,6 +9,7 @@ import {
   registerAccount,
 } from "./auth.mjs";
 import { destroyOnFabric, fabricReady, inspectOnFabric, provisionOnFabric, publicPod, skuPrice, spareFor } from "./fabric.mjs";
+import { confirmCheckout, createCreditCheckout } from "./stripe.mjs";
 
 function header(req) {
   return req.headers?.authorization || req.headers?.Authorization || "";
@@ -69,9 +70,7 @@ async function syncPods(account) {
       if (live.connect) patch.connect_json = JSON.stringify(live.connect);
       await updateById("pods", pod.id, patch);
       out.push(publicPod({ ...pod, ...patch }));
-    } else {
-      out.push(publicPod(pod));
-    }
+    } else out.push(publicPod(pod));
   }
   return out;
 }
@@ -106,9 +105,32 @@ export async function handleHouse(req) {
   if (path === "auth/ssh" && method === "POST") {
     const gate = await requireAccount(req);
     if (gate.error) return gate;
-    const key = String(body.ssh_public_key || "").slice(0, 800);
-    await updateById("accounts", gate.account.id, { ssh_public_key: key });
+    await updateById("accounts", gate.account.id, { ssh_public_key: String(body.ssh_public_key || "").slice(0, 800) });
     return { ok: true };
+  }
+
+  if (path === "billing/checkout" && method === "POST") {
+    const gate = await requireAccount(req);
+    if (gate.error) return gate;
+    const origin = process.env.PUBLIC_ORIGIN || "https://www.calabigroup.com";
+    return createCreditCheckout({ accountId: gate.account.id, pack: body.pack, origin });
+  }
+  if (path === "billing/confirm" && method === "POST") {
+    const gate = await requireAccount(req);
+    if (gate.error) return gate;
+    const paid = await confirmCheckout(body.session_id, gate.account.id);
+    if (paid.error) return paid;
+    const seen = await findWhere("sessions", "token", `paid-${paid.session}`);
+    if (seen.length) return { account: publicAccount(gate.account), replayed: true };
+    await insertTable("sessions", {
+      id: nid("pay"),
+      token: `paid-${paid.session}`,
+      account_id: gate.account.id,
+      created_at: new Date().toISOString(),
+    });
+    const next = Number(gate.account.credits_cents || 0) + paid.cents;
+    await updateById("accounts", gate.account.id, { credits_cents: next });
+    return { account: publicAccount({ ...gate.account, credits_cents: next }) };
   }
 
   if (path === "heartbeats" && method === "POST") return listTable("heartbeats", "region_id.asc");
@@ -124,25 +146,19 @@ export async function handleHouse(req) {
     const gate = await requireAccount(req);
     if (gate.error) return gate;
     const account = await settleAccountPods(gate.account);
-    const sku = String(body.sku || "").slice(0, 16);
+    const sku = String(body.sku || "").slice(0, 24);
     const region = String(body.region || "").slice(0, 16);
     const price = skuPrice(sku);
     if (!price) return { error: "Unknown SKU." };
     const reserve = Math.ceil(price * 100 * 0.25);
     const paid = await debit(account, reserve, "launch reserve");
     if (paid.error) return paid;
-
     const id = nid("pod");
     let status = fabricReady() ? "provisioning" : "queued";
     let providerRef = null;
     let connect = null;
     try {
-      const out = await provisionOnFabric({
-        calabiId: id,
-        sku,
-        region,
-        sshPublicKey: account.ssh_public_key,
-      });
+      const out = await provisionOnFabric({ calabiId: id, sku, region, sshPublicKey: account.ssh_public_key });
       status = out.status || (out.mode === "live" ? "running" : "queued");
       providerRef = out.providerRef;
       connect = out.connect;
@@ -150,19 +166,10 @@ export async function handleHouse(req) {
       await updateById("accounts", account.id, { credits_cents: Number(account.credits_cents || 0) + reserve });
       return { error: "Capacity is tight in that region. Try another region or SKU." };
     }
-
     const row = {
-      id,
-      account_id: account.id,
-      sku,
-      region,
-      spare: spareFor(region),
-      vault: Boolean(body.vault),
-      status,
-      provider_ref: providerRef,
-      connect_json: connect ? JSON.stringify(connect) : null,
-      last_billed_at: new Date().toISOString(),
-      created_at: new Date().toISOString(),
+      id, account_id: account.id, sku, region, spare: spareFor(region), vault: Boolean(body.vault),
+      status, provider_ref: providerRef, connect_json: connect ? JSON.stringify(connect) : null,
+      last_billed_at: new Date().toISOString(), created_at: new Date().toISOString(),
     };
     await insertTable("pods", row);
     return publicPod(row);
@@ -172,8 +179,7 @@ export async function handleHouse(req) {
     const gate = await requireAccount(req);
     if (gate.error) return gate;
     const id = String(body.id || "");
-    const rows = await findWhere("pods", "id", id);
-    const found = rows[0];
+    const found = (await findWhere("pods", "id", id))[0];
     if (!found || found.account_id !== gate.account.id) return { error: "Pod not found." };
     if (found.provider_ref) await destroyOnFabric(found.provider_ref);
     await deleteById("pods", id);
@@ -182,8 +188,7 @@ export async function handleHouse(req) {
 
   if (path === "cron/settle" && (method === "POST" || method === "GET")) {
     if (!process.env.CRON_SECRET || body.secret === process.env.CRON_SECRET) {
-      const accounts = await listTable("accounts");
-      for (const a of accounts) await settleAccountPods(a);
+      for (const a of await listTable("accounts")) await settleAccountPods(a);
       return { ok: true };
     }
     return { error: "forbidden", status: 403 };
