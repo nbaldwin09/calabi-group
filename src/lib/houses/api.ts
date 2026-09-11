@@ -11,3 +11,5 @@ export const me = () => api("/api/house/auth/me");
 export const saveSsh = (ssh_public_key: string) => api("/api/house/auth/ssh", { ssh_public_key });
 export const createKey = () => api("/api/house/auth/key");
 export const listKeys = () => api("/api/house/auth/keys");
+export const startCheckout = (pack: string) => api("/api/house/billing/checkout", { pack });
+export const confirmCheckout = (session_id: string) => api("/api/house/billing/confirm", { session_id });
