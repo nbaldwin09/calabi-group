@@ -1,14 +1,14 @@
 :root {
-  --color-bg: #f2f2f2;
-  --color-fg: #161616;
-  --color-muted: #6b6b6b;
-  --color-faint: #9a9a9a;
-  --color-surface: #ececec;
-  --color-surface-2: #e4e4e4;
+  --color-bg: #07070c;
+  --color-fg: #f3f3f7;
+  --color-muted: #9b9bad;
+  --color-faint: #6a6a7c;
+  --color-surface: #12121a;
+  --color-surface-2: #1b1b26;
   --color-accent: #3d6bff;
   --color-accent-fg: #ffffff;
   --color-dot: #3d6bff;
-  --color-line: #1616161f;
+  --color-line: #ffffff18;
   --font-mark: "Outfit", ui-sans-serif, system-ui, sans-serif;
 }
 
