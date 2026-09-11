@@ -10,32 +10,32 @@ function DocsPage() {
         <section>
           <h2 className="text-xl text-fg">Launch</h2>
           <p className="mt-2">
-            Open Console, pick a SKU and region, attach the vault, launch. Calabi assigns a spare
-            region before the pod is marked ready. You are billed on the Calabi list price for the
-            minutes the pod exists.
+            Create an account, paste an SSH public key, open Console, pick a SKU and region, launch.
+            A spare region is assigned before the pod is marked ready. Minutes bill against your
+            Calabi balance. At zero, running pods stop.
           </p>
+        </section>
+        <section>
+          <h2 className="text-xl text-fg">API</h2>
+          <p className="mt-2">Issue a key on the account page. All routes are POST JSON.</p>
+          <pre className="mt-3 overflow-x-auto bg-surface p-4 font-mono text-xs text-fg">
+{`Authorization: Bearer ck_…
+POST /api/house/pods
+POST /api/house/pods/add   { "sku":"c-s", "region":"iad", "vault":true }
+POST /api/house/pods/del   { "id":"pod-…" }`}
+          </pre>
         </section>
         <section>
           <h2 className="text-xl text-fg">Regions</h2>
           <p className="mt-2">
-            Four Calabi regions: us-east-1 (Ashburn), us-west-1 (San Jose), eu-west-1 (Amsterdam),
-            ap-southeast-1 (Singapore). Workloads land in qualified facilities inside that geography.
-            The spare is a second Calabi region, not a second rack in the same hall.
-          </p>
-        </section>
-        <section>
-          <h2 className="text-xl text-fg">Vault</h2>
-          <p className="mt-2">
-            Vault is object-lock storage on a second medium. Snapshots replicate on a 15 / 10 / 5
-            minute cadence by SKU class. Do not disable vault to save cents.
+            us-east-1 Ashburn, us-west-1 San Jose, eu-west-1 Amsterdam, ap-southeast-1 Singapore.
           </p>
         </section>
         <section>
           <h2 className="text-xl text-fg">Contract</h2>
           <p className="mt-2">
-            Calabi Group is the merchant of record. Support, invoices, and the control plane come
-            from us. Capacity is fulfilled on a private fabric of qualified facilities. You do not
-            hold an account with those operators.
+            Calabi Group is the merchant of record. Capacity is fulfilled on a private fabric of
+            qualified facilities. You do not hold an account with those operators.
           </p>
         </section>
       </article>

@@ -9,6 +9,7 @@ const LINKS = [
   { to: "/pricing", label: "Pricing" },
   { to: "/status", label: "Status" },
   { to: "/docs", label: "Docs" },
+  { to: "/account", label: "Account" },
 ];
 
 export function BrandShell({ children }: { brand?: string; children: ReactNode }) {

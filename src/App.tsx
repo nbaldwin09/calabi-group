@@ -10,6 +10,7 @@ import { Route as R7 } from "./routes/route";
 import { Route as R8 } from "./routes/status";
 import { Route as R9 } from "./routes/storage";
 import { Route as R10 } from "./routes/terms";
+import { Route as R11 } from "./routes/account";
 
 export default function App() {
   const Layout = R7.component;
@@ -26,6 +27,7 @@ export default function App() {
         <Route path="status" element={<R8.component />} />
         <Route path="storage" element={<R9.component />} />
         <Route path="terms" element={<R10.component />} />
+        <Route path="account" element={<R11.component />} />
       </Route>
     </Routes>
   );
