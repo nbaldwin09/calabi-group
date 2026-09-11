@@ -1,13 +1,8 @@
-/**
- * Calabi fabric adapter.
- * Customer payloads never include partner names, IDs, or hostnames.
- * Partner credentials stay in process env on this service only.
- */
 const RUNPOD_BASE = "https://rest.runpod.io/v1";
 
 export const SKU_FABRIC = {
-  "v-s": { computeType: "CPU", vcpuCount: 4, volumeInGb: 40, containerDiskInGb: 20, imageName: "runpod/base:cpu" },
-  "v-m": { computeType: "CPU", vcpuCount: 16, volumeInGb: 80, containerDiskInGb: 40, imageName: "runpod/base:cpu" },
+  "v-s": { computeType: "CPU", vcpuCount: 4, volumeInGb: 40, containerDiskInGb: 20, imageName: "runpod/pytorch:2.4.0-py3.11-cuda12.4.1-devel-ubuntu22.04", price: 0.04 },
+  "v-m": { computeType: "CPU", vcpuCount: 16, volumeInGb: 80, containerDiskInGb: 40, imageName: "runpod/pytorch:2.4.0-py3.11-cuda12.4.1-devel-ubuntu22.04", price: 0.18 },
   "c-s": {
     computeType: "GPU",
     gpuCount: 1,
@@ -15,6 +10,7 @@ export const SKU_FABRIC = {
     volumeInGb: 80,
     containerDiskInGb: 40,
     imageName: "runpod/pytorch:2.4.0-py3.11-cuda12.4.1-devel-ubuntu22.04",
+    price: 0.44,
   },
   "c-m": {
     computeType: "GPU",
@@ -23,6 +19,7 @@ export const SKU_FABRIC = {
     volumeInGb: 200,
     containerDiskInGb: 50,
     imageName: "runpod/pytorch:2.4.0-py3.11-cuda12.4.1-devel-ubuntu22.04",
+    price: 1.89,
   },
   "c-l": {
     computeType: "GPU",
@@ -31,6 +28,7 @@ export const SKU_FABRIC = {
     volumeInGb: 400,
     containerDiskInGb: 80,
     imageName: "runpod/pytorch:2.4.0-py3.11-cuda12.4.1-devel-ubuntu22.04",
+    price: 6.4,
   },
   "c-x": {
     computeType: "GPU",
@@ -39,6 +37,7 @@ export const SKU_FABRIC = {
     volumeInGb: 1000,
     containerDiskInGb: 100,
     imageName: "runpod/pytorch:2.4.0-py3.11-cuda12.4.1-devel-ubuntu22.04",
+    price: 24,
   },
 };
 
@@ -48,6 +47,10 @@ export const REGION_COUNTRY = {
   ams: ["NL", "DE", "RO"],
   sin: ["SG", "JP", "KR"],
 };
+
+export function skuPrice(id) {
+  return SKU_FABRIC[id]?.price || 0;
+}
 
 export function fabricReady() {
   return Boolean(process.env.RUNPOD_API_KEY);
@@ -80,12 +83,34 @@ async function runpod(path, { method = "GET", body } = {}) {
   return data;
 }
 
-export async function provisionOnFabric({ calabiId, sku, region }) {
+function mapStatus(desired) {
+  const s = String(desired || "").toUpperCase();
+  if (s === "RUNNING") return "running";
+  if (s === "EXITED" || s === "STOPPED") return "stopped";
+  if (s === "TERMINATED") return "terminated";
+  return "provisioning";
+}
+
+function connectFromPod(pod) {
+  if (!pod) return null;
+  const ports = pod.portMappings || {};
+  const sshPort = ports["22"] || ports[22];
+  const host = pod.publicIp || pod.machine?.podHostId;
+  if (!host) return null;
+  const port = sshPort || 22;
+  return {
+    method: "ssh",
+    host: String(host),
+    port: Number(port),
+    user: "root",
+    command: `ssh -p ${port} root@${host}`,
+  };
+}
+
+export async function provisionOnFabric({ calabiId, sku, region, sshPublicKey }) {
   const spec = SKU_FABRIC[sku];
   if (!spec) throw new Error("unknown_sku");
-  if (!fabricReady()) {
-    return { mode: "queued", providerRef: null };
-  }
+  if (!fabricReady()) return { mode: "queued", providerRef: null, status: "queued", connect: null };
 
   const payload = {
     name: `calabi-${calabiId}`,
@@ -100,7 +125,7 @@ export async function provisionOnFabric({ calabiId, sku, region }) {
     env: {
       CALABI_POD: calabiId,
       CALABI_SKU: sku,
-      JUPYTER_ENABLE: "1",
+      ...(sshPublicKey ? { PUBLIC_KEY: sshPublicKey } : {}),
     },
   };
   if (spec.computeType === "GPU") {
@@ -115,8 +140,22 @@ export async function provisionOnFabric({ calabiId, sku, region }) {
   return {
     mode: "live",
     providerRef: created?.id || null,
-    desiredStatus: created?.desiredStatus || "RUNNING",
+    status: mapStatus(created?.desiredStatus) || "provisioning",
+    connect: connectFromPod(created),
   };
+}
+
+export async function inspectOnFabric(providerRef) {
+  if (!providerRef || !fabricReady()) return null;
+  try {
+    const pod = await runpod(`/pods/${encodeURIComponent(providerRef)}`);
+    return {
+      status: mapStatus(pod?.desiredStatus),
+      connect: connectFromPod(pod),
+    };
+  } catch {
+    return null;
+  }
 }
 
 export async function destroyOnFabric(providerRef) {
@@ -129,8 +168,20 @@ export async function destroyOnFabric(providerRef) {
   }
 }
 
+export function spareFor(region) {
+  const order = ["iad", "sjc", "ams", "sin"];
+  const i = order.indexOf(region);
+  return order[(i + 1) % order.length];
+}
+
 export function publicPod(row) {
   if (!row) return row;
+  let connect = null;
+  try {
+    connect = row.connect_json ? JSON.parse(row.connect_json) : null;
+  } catch {
+    connect = null;
+  }
   return {
     id: row.id,
     sku: row.sku,
@@ -139,11 +190,6 @@ export function publicPod(row) {
     vault: Boolean(row.vault),
     status: row.status || "queued",
     created_at: row.created_at,
+    connect,
   };
-}
-
-export function spareFor(region) {
-  const order = ["iad", "sjc", "ams", "sin"];
-  const i = order.indexOf(region);
-  return order[(i + 1) % order.length];
 }
