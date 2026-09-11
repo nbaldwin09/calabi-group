@@ -11,8 +11,7 @@ function DocsPage() {
           <h2 className="text-xl text-fg">Launch</h2>
           <p className="mt-2">
             Create an account, paste an SSH public key, open Console, pick a SKU and region, launch.
-            A spare region is assigned before the pod is marked ready. Minutes bill against your
-            Calabi balance. At zero, running pods stop.
+            Minutes bill against your Calabi balance. At zero, running pods stop.
           </p>
         </section>
         <section>
@@ -32,10 +31,9 @@ POST /api/house/pods/del   { "id":"pod-…" }`}
           </p>
         </section>
         <section>
-          <h2 className="text-xl text-fg">Contract</h2>
+          <h2 className="text-xl text-fg">Account</h2>
           <p className="mt-2">
-            Calabi Group is the merchant of record. Capacity is fulfilled on a private fabric of
-            qualified facilities. You do not hold an account with those operators.
+            You buy compute from Calabi Group. Pods, storage, and billing live in your Calabi account.
           </p>
         </section>
       </article>

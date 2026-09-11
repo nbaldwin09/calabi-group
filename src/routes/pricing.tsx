@@ -10,7 +10,7 @@ function PricingPage() {
       <p className="text-center text-xs uppercase tracking-[0.16em] text-faint">GPU pricing</p>
       <h1 className="mt-3 text-center font-display text-5xl sm:text-6xl">GPU cloud pricing</h1>
       <p className="mx-auto mt-4 max-w-xl text-center text-muted">
-        Pods for dedicated instances. Endpoints for inference. Clusters for multi-node jobs. Calabi is the merchant of record.
+        Pods for dedicated instances. Endpoints for inference. Clusters for multi-node jobs. One Calabi account.
       </p>
       <h2 className="mt-16 font-display text-4xl">Pods</h2>
       <ul className="mt-6 divide-y divide-line border-y border-line">
