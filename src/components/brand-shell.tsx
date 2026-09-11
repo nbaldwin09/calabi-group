@@ -9,6 +9,21 @@ const PILL = [
   { to: "/status", label: "Enterprise" },
 ];
 
+function Wordmark() {
+  return (
+    <span className="font-mark text-[17px] font-semibold tracking-tight text-white">
+      calabi
+      <span className="relative ml-1.5 inline-block">
+        group
+        <span
+          aria-hidden
+          className="absolute -right-2 top-0 h-2 w-2 rounded-[2px] bg-[#3d6bff]"
+        />
+      </span>
+    </span>
+  );
+}
+
 export function BrandShell({ children }: { brand?: string; children: ReactNode }) {
   const [open, setOpen] = useState(false);
   return (
@@ -18,12 +33,15 @@ export function BrandShell({ children }: { brand?: string; children: ReactNode }
       </div>
       <header className="sticky top-0 z-40 bg-[#07060f]/90 backdrop-blur-md">
         <div className="mx-auto flex max-w-[1200px] items-center gap-3 px-5 py-3">
-          <Link to="/" className="font-mark text-lg font-semibold tracking-tight" onClick={() => setOpen(false)}>
-            calabi
+          <Link to="/" className="shrink-0" onClick={() => setOpen(false)}>
+            <Wordmark />
           </Link>
-          <nav className="ml-2 hidden items-center rounded-full bg-[#161326] px-1 py-1 md:flex">
+          <nav
+            className="ml-3 hidden items-center md:flex"
+            style={{ background: "#161326", borderRadius: 9999, padding: "4px 6px" }}
+          >
             {PILL.map((l) => (
-              <Link key={l.to} to={l.to} className="inline-flex h-9 items-center rounded-full px-3 text-sm text-[#b7b3c9] hover:text-white">
+              <Link key={l.to} to={l.to} className="inline-flex h-9 items-center px-3 text-sm text-[#b7b3c9] hover:text-white">
                 {l.label}
               </Link>
             ))}
@@ -31,11 +49,19 @@ export function BrandShell({ children }: { brand?: string; children: ReactNode }
           <div className="ml-auto hidden items-center gap-4 md:flex">
             <Link to="/docs" className="text-sm text-[#b7b3c9]">Contact sales</Link>
             <Link to="/account" className="text-sm text-[#b7b3c9]">Sign in</Link>
-            <Link to="/account" className="inline-flex h-10 items-center rounded-full bg-[#7c5cff] px-4 text-sm font-medium text-white">
+            <Link
+              to="/account"
+              className="inline-flex h-10 items-center px-4 text-sm font-medium text-white"
+              style={{ background: "#7c5cff", borderRadius: 9999 }}
+            >
               Sign Up
             </Link>
           </div>
-          <Link to="/account" className="ml-auto inline-flex h-10 items-center rounded-full bg-[#7c5cff] px-4 text-sm md:hidden">
+          <Link
+            to="/account"
+            className="ml-auto inline-flex h-10 items-center px-4 text-sm text-white md:hidden"
+            style={{ background: "#7c5cff", borderRadius: 9999 }}
+          >
             Sign Up
           </Link>
           <button type="button" className="inline-flex h-11 w-11 items-center justify-center md:hidden" onClick={() => setOpen((v) => !v)} aria-label="Menu">
@@ -45,7 +71,7 @@ export function BrandShell({ children }: { brand?: string; children: ReactNode }
         {open ? (
           <nav className="flex flex-col px-5 py-3 md:hidden">
             {PILL.map((l) => (
-              <Link key={l.to} to={l.to} className="h-11 items-center inline-flex" onClick={() => setOpen(false)}>{l.label}</Link>
+              <Link key={l.to} to={l.to} className="inline-flex h-11 items-center" onClick={() => setOpen(false)}>{l.label}</Link>
             ))}
           </nav>
         ) : null}
@@ -53,7 +79,7 @@ export function BrandShell({ children }: { brand?: string; children: ReactNode }
       {children}
       <footer className="border-t border-white/10">
         <div className="mx-auto grid max-w-[1200px] gap-8 px-5 py-14 text-sm text-[#7a7690] sm:grid-cols-4">
-          <p className="font-mark text-lg text-white">calabi</p>
+          <Wordmark />
           <div>
             <p className="text-white">Product</p>
             <Link to="/compute" className="mt-2 block">Pods</Link>
@@ -73,6 +99,27 @@ export function BrandShell({ children }: { brand?: string; children: ReactNode }
           </div>
         </div>
       </footer>
+      <a
+        href="https://aorila.com"
+        target="_blank"
+        rel="noreferrer"
+        style={{
+          position: "fixed",
+          right: 16,
+          bottom: 16,
+          zIndex: 50,
+          background: "#ffffff",
+          color: "#161616",
+          borderRadius: 10,
+          padding: "10px 14px",
+          fontSize: 13,
+          lineHeight: 1.3,
+          boxShadow: "0 8px 24px rgba(0,0,0,.35)",
+        }}
+      >
+        Powered by{" "}
+        <span style={{ textDecoration: "underline" }}>Aorila</span>
+      </a>
     </div>
   );
 }
