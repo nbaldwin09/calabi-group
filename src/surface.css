@@ -1,0 +1,68 @@
+.hero-glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 75% 35%, #7c5cff55, transparent 55%);
+}
+.hero-form {
+  display: flex;
+  align-items: center;
+  max-width: 28rem;
+  margin-top: 2rem;
+  padding: 4px;
+  background: #fff;
+  border-radius: 999px;
+}
+.hero-form input {
+  height: 48px;
+  flex: 1;
+  min-width: 0;
+  padding: 0 20px;
+  color: #161226;
+  background: transparent;
+  outline: none;
+}
+.hero-form button,
+.btn-pill {
+  height: 48px;
+  padding: 0 20px;
+  border-radius: 999px;
+  background: #7c5cff;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+}
+.panel {
+  background: #12101c;
+  border-radius: 24px;
+  padding: 32px;
+  box-shadow: 0 0 0 1px #ffffff14;
+}
+.card {
+  background: #12101c;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 0 0 1px #ffffff14;
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  background: #161326;
+  padding: 4px 12px;
+  font-size: 12px;
+  color: #b7b3c9;
+}
+.cube {
+  position: absolute;
+  border-radius: 12px;
+}
+.aorila-plate {
+  display: inline-block;
+  margin-top: 24px;
+  background: #fff;
+  color: #161616;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 13px;
+}
