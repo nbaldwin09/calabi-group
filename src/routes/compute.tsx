@@ -33,7 +33,7 @@ function ComputePage() {
       <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-faint">Deploy</p>
       <h1 className="mt-2 font-display text-5xl">Select an instance</h1>
       <p className="mt-3 max-w-xl text-muted">
-        Live catalog. Deploy buys the hour from Calabi and we purchase capacity on the fabric in the same request.
+        Calabi GPU and CPU instances. Deploy from this catalog into a Calabi region.
       </p>
       <div className="mt-8 flex flex-wrap gap-6 text-sm">
         {PRODUCTS.map((p) => (

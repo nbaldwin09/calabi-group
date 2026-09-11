@@ -18,8 +18,8 @@ const POINTS = [
 ];
 
 const FAQ = [
-  { q: "What is a pod?", a: "A dedicated GPU or CPU machine you SSH into. Billed per minute." },
-  { q: "Who do I buy from?", a: "Calabi Group is the merchant of record. Capacity is fulfilled on a private fabric." },
+  { q: "What is a pod?", a: "A dedicated Calabi GPU or CPU machine you SSH into. Billed per minute." },
+  { q: "Who do I buy from?", a: "Calabi Group. Your account, credits, pods, and invoice are Calabi." },
   { q: "How do I start?", a: "Create an account, add credits, deploy from Compute." },
 ];
 
