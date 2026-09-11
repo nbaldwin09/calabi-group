@@ -3,7 +3,7 @@ import { BrandShell } from "@/components/brand-shell";
 
 export const Route = createFileRoute("/")({
   component: () => (
-    <BrandShell brand="calabi">
+    <BrandShell>
       <Outlet />
     </BrandShell>
   ),

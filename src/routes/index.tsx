@@ -17,7 +17,7 @@ function CalabiHome() {
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link
               to="/compute"
-              className="inline-flex h-11 items-center rounded-sm bg-fg px-5 text-sm text-bg"
+              className="inline-flex h-11 items-center rounded-sm bg-accent px-5 text-sm text-accent-fg"
             >
               Compute
             </Link>
@@ -31,7 +31,7 @@ function CalabiHome() {
         </div>
       </section>
       <section className="mx-auto grid max-w-4xl gap-10 px-5 py-16 sm:grid-cols-3">
-        <Fact title="Compute" body="CPU nodes and GPU pods, dropshiped and wrapped in a spare region." />
+        <Fact title="Compute" body="CPU nodes and GPU pods, dropshipped and wrapped in a spare region." />
         <Fact title="Storage" body="Block, object, and a WORM vault. Three copies. Two media." />
         <Fact title="Status" body="Four regions, always watching. Failover is the product." />
       </section>

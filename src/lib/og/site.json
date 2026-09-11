@@ -1,0 +1,12 @@
+{
+  "name": "Calabi Group",
+  "domain": "calabigroup.com",
+  "tagline": "GPU, VM, and storage with a spare already on.",
+  "palette": {
+    "bg": "#F2F2F2",
+    "fg": "#161616",
+    "accent": "#3D6BFF"
+  },
+  "og": "/og.jpg",
+  "favicon": "/favicon.svg"
+}

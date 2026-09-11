@@ -8,7 +8,7 @@ function ComputePage() {
   return (
     <SimplePage
       title="Compute"
-      lead="GPU pods and CPU VMs. Price is the dropshiped floor plus snapshot, spare, and failover."
+      lead="GPU pods and CPU VMs. Price is the dropshipped floor plus snapshot, spare, and failover."
     >
       <ul className="divide-y divide-line border-y border-line">
         {SKUS.map((s) => (
@@ -21,7 +21,7 @@ function ComputePage() {
             </div>
             <div className="flex items-center gap-4">
               <span className="tabular-nums text-muted">${s.price.toFixed(2)} / hr</span>
-              <Link to="/console" search={{ sku: s.id }} className="text-sm">
+              <Link to="/console" search={{ sku: s.id }} className="text-sm text-accent">
                 Launch
               </Link>
             </div>
