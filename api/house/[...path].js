@@ -1,10 +1,8 @@
 import { deleteById, insertTable, listTable } from "../../sb.mjs";
+import { destroyOnFabric, fabricReady, provisionOnFabric, publicPod, spareFor } from "../_lib/fabric.mjs";
 
 function nid(prefix) {
   return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`;
-}
-function official(url) {
-  return /youtube\.com|youtu\.be|twitch\.tv|\.m3u8(\?|$)|\.(mp4|webm)(\?|$)/i.test(url);
 }
 
 export default async function handler(req, res) {
@@ -12,30 +10,53 @@ export default async function handler(req, res) {
   const p = parts.join("/");
   const body = typeof req.body === "string" ? JSON.parse(req.body || "{}") : req.body || {};
   res.setHeader("content-type", "application/json");
-  if (p === "pins" && req.method === "POST") return res.status(200).json(await listTable("desk_pins"));
-  if (p === "pins/add" && req.method === "POST") {
-    if (!official(String(body.url || ""))) return res.status(200).json({ error: "Official YouTube, Twitch, HLS, or MP4 only." });
-    const row = { id: nid("pin"), label: String(body.label || "Pin").slice(0, 80), url: String(body.url).slice(0, 500), created_at: new Date().toISOString() };
-    await insertTable("desk_pins", row);
-    return res.status(200).json({ id: row.id });
+
+  if (p === "pods" && req.method === "POST") {
+    const rows = await listTable("pods");
+    return res.status(200).json((rows || []).map(publicPod));
   }
-  if (p === "board" && req.method === "POST") return res.status(200).json(await listTable("board"));
-  if (p === "board/add" && req.method === "POST") {
-    const role = ["grower", "kitchen", "lab"].includes(body.role) ? body.role : "grower";
-    const row = { id: nid("note"), role, crop: String(body.crop || "").slice(0, 80), note: String(body.note || "").slice(0, 500), created_at: new Date().toISOString() };
-    await insertTable("board", row);
-    return res.status(200).json({ id: row.id });
-  }
-  if (p === "pods" && req.method === "POST") return res.status(200).json(await listTable("pods"));
   if (p === "pods/add" && req.method === "POST") {
-    const row = { id: nid("pod"), sku: String(body.sku || "").slice(0, 16), region: String(body.region || "").slice(0, 16), vault: Boolean(body.vault), created_at: new Date().toISOString() };
+    const sku = String(body.sku || "").slice(0, 16);
+    const region = String(body.region || "").slice(0, 16);
+    const id = nid("pod");
+    const spare = spareFor(region);
+    let status = fabricReady() ? "provisioning" : "queued";
+    let providerRef = null;
+    try {
+      const out = await provisionOnFabric({ calabiId: id, sku, region });
+      status = out.mode === "live" ? "running" : "queued";
+      providerRef = out.providerRef;
+    } catch (e) {
+      return res.status(200).json({
+        error:
+          e.message === "unknown_sku"
+            ? "Unknown SKU."
+            : "Capacity is tight in that region. Try another region or SKU.",
+      });
+    }
+    const row = {
+      id,
+      sku,
+      region,
+      spare,
+      vault: Boolean(body.vault),
+      status,
+      provider_ref: providerRef,
+      created_at: new Date().toISOString(),
+    };
     await insertTable("pods", row);
-    return res.status(200).json({ id: row.id });
+    return res.status(200).json(publicPod(row));
   }
   if (p === "pods/del" && req.method === "POST") {
-    await deleteById("pods", String(body.id || ""));
-    return res.status(200).json({ id: body.id });
+    const id = String(body.id || "");
+    const rows = await listTable("pods");
+    const found = (rows || []).find((r) => r.id === id);
+    if (found?.provider_ref) await destroyOnFabric(found.provider_ref);
+    await deleteById("pods", id);
+    return res.status(200).json({ id });
   }
-  if (p === "heartbeats" && req.method === "POST") return res.status(200).json(await listTable("heartbeats", "region_id.asc"));
+  if (p === "heartbeats" && req.method === "POST") {
+    return res.status(200).json(await listTable("heartbeats", "region_id.asc"));
+  }
   res.status(404).json({ error: "not found" });
 }

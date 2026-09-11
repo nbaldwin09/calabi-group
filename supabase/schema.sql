@@ -3,7 +3,10 @@ create table if not exists pods (
   id text primary key,
   sku text not null,
   region text not null,
+  spare text,
   vault boolean not null default true,
+  status text not null default 'queued',
+  provider_ref text,
   created_at timestamptz not null default now()
 );
 create table if not exists heartbeats (
@@ -18,3 +21,6 @@ insert into heartbeats (region_id, status, lag_ms) values
   ('ams', 'nominal', 88),
   ('sin', 'nominal', 73)
 on conflict (region_id) do nothing;
+alter table pods add column if not exists spare text;
+alter table pods add column if not exists status text;
+alter table pods add column if not exists provider_ref text;
